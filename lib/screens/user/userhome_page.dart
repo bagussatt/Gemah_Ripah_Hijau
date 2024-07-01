@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grhijau/screens/user/pickup/pickups.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:grhijau/screens/user/complaint/createcomplaintpage.dart';
@@ -92,6 +93,18 @@ class _UserHomePageState extends State<UserHomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => CreateComplaintPage(userId: userId),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text('Ajukan Penjemputan Sampah'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PickupPage(userId: userId),
                   ),
                 );
               },
