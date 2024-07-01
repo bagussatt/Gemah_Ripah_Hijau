@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';// Import UserHomePage
+import 'package:flutter/material.dart';
 import 'package:grhijau/screens/admin/adminhome_page.dart';
 import 'package:grhijau/screens/user/userhome_page.dart';
 import 'package:http/http.dart' as http;
@@ -31,12 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
       final responseBody = json.decode(response.body);
       final String role = responseBody['role'];
 
-      // Menampilkan notifikasi pendaftaran berhasil
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pendaftaran berhasil!')),
       );
 
-      // Pindahkan pengguna ke halaman yang sesuai berdasarkan role
       Future.delayed(Duration(seconds: 1), () {
         if (role == 'admin') {
           Navigator.pushReplacement(
@@ -47,7 +45,8 @@ class _RegisterPageState extends State<RegisterPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => UserHomePage(username: _usernameController.text),
+              builder: (context) =>
+                  UserHomePage(username: _usernameController.text),
             ),
           );
         }

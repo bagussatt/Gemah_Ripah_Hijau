@@ -79,7 +79,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ReadComplaintsPage(),
+                    builder: (context) => ReadComplaintsPage(userId: userId),
                   ),
                 );
               },

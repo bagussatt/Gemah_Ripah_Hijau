@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grhijau/screens/admin/complaints/complaintadmin.dart';
 import 'package:grhijau/screens/admin/register_page.dart';
 import 'package:grhijau/screens/user/login_page.dart';
 
@@ -40,6 +41,18 @@ class AdminHomePage extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text('Riwayat Keluhan Pengguna'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReadComplaintsAdmin(),
+                  ),
                 );
               },
             ),
