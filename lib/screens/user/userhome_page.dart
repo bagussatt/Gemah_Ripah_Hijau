@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:grhijau/screens/user/login_page.dart'; // Import LoginPage
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:grhijau/screens/user/complaint/createcomplaintpage.dart';
+import 'package:grhijau/screens/user/complaint/readcomplaintspage.dart';
+import 'package:grhijau/screens/user/login_page.dart';
 
 class UserHomePage extends StatefulWidget {
   final String username;
 
-  // Tambahkan konstruktor untuk menerima username
   UserHomePage({required this.username});
 
   @override
@@ -15,26 +16,29 @@ class UserHomePage extends StatefulWidget {
 
 class _UserHomePageState extends State<UserHomePage> {
   late String username;
+  late int userId; // Initialize userId
 
   @override
   void initState() {
     super.initState();
     username = widget.username;
-    // Ambil data pengguna dari backend
+    userId = 0; // Initialize userId here
     _fetchUserData();
   }
 
   Future<void> _fetchUserData() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/user/$username'));
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:3000/user/$username'));
 
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       setState(() {
         username = responseBody['username'];
+        userId = responseBody['id']; // Assign userId after fetching user data
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal mengambil data pengguna')),
+        SnackBar(content: Text('Failed to fetch user data')),
       );
     }
   }
@@ -43,7 +47,7 @@ class _UserHomePageState extends State<UserHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Halaman Pengguna'),
+        title: Text('User Page'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -54,7 +58,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 color: Colors.green,
               ),
               child: Text(
-                'Selamat datang, $username!',
+                'Welcome, $username!',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
@@ -62,10 +66,33 @@ class _UserHomePageState extends State<UserHomePage> {
               leading: Icon(Icons.logout),
               title: Text('Logout'),
               onTap: () {
-                // Arahkan ke halaman login
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text('Riwayat Keluhan Saya'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReadComplaintsPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text('Ajukan Keluhan Sampah'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateComplaintPage(userId: userId),
+                  ),
                 );
               },
             ),
@@ -73,7 +100,16 @@ class _UserHomePageState extends State<UserHomePage> {
         ),
       ),
       body: Center(
-        child: Text('Selamat datang, $username!', style: TextStyle(fontSize: 24)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Welcome, $username!', style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20),
+            userId != 0
+                ? Text('User ID: $userId', style: TextStyle(fontSize: 18))
+                : CircularProgressIndicator(), // Show loading indicator until userId is initialized
+          ],
+        ),
       ),
     );
   }

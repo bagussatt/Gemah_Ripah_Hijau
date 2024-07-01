@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       final String role = responseBody['role'];
+      final String username = _usernameController.text;  // Ambil username dari controller
 
       // Pindahkan pengguna ke halaman yang sesuai berdasarkan role
       Future.delayed(Duration(seconds: 1), () {
@@ -38,8 +39,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  UserHomePage(username: _usernameController.text),
+              builder: (context) => UserHomePage(username: username),  // Pass username ke UserHomePage
             ),
           );
         }
