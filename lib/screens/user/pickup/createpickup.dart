@@ -13,6 +13,7 @@ class CreatePickupPage extends StatefulWidget {
 }
 
 class _CreatePickupPageState extends State<CreatePickupPage> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController catatanController = TextEditingController();
 
   String? _selectedTime;
@@ -32,16 +33,14 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
   ];
 
   Future<void> _submitPickup() async {
-    if (_selectedTime == null || _lokasi == null) {
+    if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
 
-    String currentDate = DateTime.now()
-        .toString()
-        .split(' ')[0]; // Get current date in YYYY-MM-DD format
+    String currentDate = DateTime.now().toString().split(' ')[0];
     String dateTime = '$currentDate $_selectedTime';
 
     final response = await http.post(
@@ -56,9 +55,11 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
     );
 
     if (response.statusCode == 200) {
-      Navigator.pop(context); // Kembali ke halaman sebelumnya setelah sukses
+      Navigator.pop(context);
     } else {
-      print('Failed to create pickup.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create pickup.')),
+      );
     }
   }
 
@@ -90,50 +91,70 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            DropdownButton<String>(
-              hint: Text('Select Time'),
-              value: _selectedTime,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedTime = newValue;
-                });
-              },
-              items: times.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 12),
-            TextButton(
-              onPressed: _selectLocation,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    _lokasi ?? 'Pilih Lokasi',
-                    style: TextStyle(fontSize: 16),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Select Time',
+                    border: OutlineInputBorder(),
                   ),
-                  Icon(Icons.location_on),
-                ],
-              ),
+                  value: _selectedTime,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedTime = newValue;
+                    });
+                  },
+                  validator: (value) => value == null ? 'Please select a time' : null,
+                  items: times.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                SizedBox(height: 12),
+                TextButton(
+                  onPressed: _selectLocation,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _lokasi ?? 'Pilih Lokasi',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Icon(Icons.location_on),
+                    ],
+                  ),
+                ),
+                if (_lokasi == null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      'Please select a location',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                SizedBox(height: 12),
+                TextFormField(
+                  controller: catatanController,
+                  decoration: InputDecoration(
+                    labelText: 'Catatan',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: null,
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submitPickup,
+                  child: Text('Submit'),
+                ),
+              ],
             ),
-            SizedBox(height: 12),
-            TextField(
-              controller: catatanController,
-              decoration: InputDecoration(labelText: 'Catatan'),
-              maxLines: null,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _submitPickup,
-              child: Text('Submit'),
-            ),
-          ],
+          ),
         ),
       ),
     );

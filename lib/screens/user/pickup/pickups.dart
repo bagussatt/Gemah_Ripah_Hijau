@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grhijau/screens/user/pickup/createpickup.dart';
+import 'package:grhijau/screens/user/pickup/detailpickups.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -52,6 +53,16 @@ class _PickupPageState extends State<PickupPage> {
     return DateFormat('dd MMMM yyyy, HH:mm').format(dateTime);
   }
 
+  Color _getStatusColor(String status) {
+    if (status == 'In Process') {
+      return Colors.red;
+    } else if (status == 'Collected') {
+      return Colors.green;
+    } else {
+      return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,10 +101,33 @@ class _PickupPageState extends State<PickupPage> {
                       Divider(height: 15),
                     ],
                   ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _deletePickup(pickup['id']),
+                  trailing: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(pickup['status']).withOpacity(0.1),
+                      border: Border.all(
+                        color: _getStatusColor(pickup['status']),
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      pickup['status'],
+                      style: TextStyle(
+                        color: _getStatusColor(pickup['status']),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPickupsPage(
+                            userId: widget.userId, pickup: pickup),
+                      ),
+                    );
+                  },
                 );
               },
             ),

@@ -4,36 +4,30 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
-  // onLocationSelected ialah variable yg bertipekan function yg menerima parameter dalam bentuk string
-  final Function(String)
-      onLocationSelected; // Callback function to return the address
+  final Function(String) onLocationSelected;
 
   const MapPage({super.key, required this.onLocationSelected});
 
   @override
-  // ignore: library_private_types_in_public_api
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController mapController; // Controller for the Google Map
+  late GoogleMapController mapController;
   LatLng? _lastMapPosition;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation(); // Request permissions on Init
+    _getCurrentLocation();
   }
 
-  // Fetch the current location
   Future<void> _getCurrentLocation() async {
-    // Check if location services are enabled
     await Geolocator.requestPermission()
         .then((value) {})
         .onError((error, stackTrace) async {
       await Geolocator.requestPermission();
     });
-    // Get the current position
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
@@ -65,15 +59,11 @@ class _MapPageState extends State<MapPage> {
         zoomControlsEnabled: true,
         rotateGesturesEnabled: true,
         mapToolbarEnabled: true,
-
-        // on below line setting compass enabled.
         compassEnabled: true,
         onMapCreated: _onMapCreated,
-        //mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
-          target:
-              _lastMapPosition ?? const LatLng(0.0, 0.0), // Jakarta coordinates
-          zoom: 20.0,
+          target: _lastMapPosition ?? const LatLng(0.0, 0.0),
+          zoom: 40.0,
         ),
         markers: {
           if (_lastMapPosition != null)
@@ -89,31 +79,30 @@ class _MapPageState extends State<MapPage> {
         },
       ),
       floatingActionButton: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FloatingActionButton(
-              onPressed: () async {
-                if (_lastMapPosition != null) {
-                  List<Placemark> placemarks = await placemarkFromCoordinates(
-                    _lastMapPosition!.latitude,
-                    _lastMapPosition!.longitude,
-                  );
-                  if (placemarks.isNotEmpty) {
-                    Placemark place =
-                        placemarks[0]; // placemark is a list of places found
-                    String fullAddress =
-                        '${place.name}, ${place.street}, ${place.locality}, ${place.postalCode},';
-                    widget.onLocationSelected(fullAddress);
-                  } else {
-                    widget.onLocationSelected("No address found");
-                  }
-                  Navigator.pop(context);
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+              if (_lastMapPosition != null) {
+                List<Placemark> placemarks = await placemarkFromCoordinates(
+                  _lastMapPosition!.latitude,
+                  _lastMapPosition!.longitude,
+                );
+                if (placemarks.isNotEmpty) {
+                  Placemark place = placemarks[0];
+                  String fullAddress =
+                      '${place.name}, ${place.street}, ${place.locality}';
+                  widget.onLocationSelected(fullAddress);
+                } else {
+                  widget.onLocationSelected("Alamat tidak Di temukan");
                 }
-              },
-              child: const Text('Submit'),
-            ),
-          ]),
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
     );
   }
 }
