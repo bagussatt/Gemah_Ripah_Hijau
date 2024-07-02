@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grhijau/screens/admin/register_page.dart';
-import 'package:grhijau/screens/user/complaint/createcomplaintpage.dart';
 import 'package:grhijau/screens/user/login_page.dart';
 
 void main() {
