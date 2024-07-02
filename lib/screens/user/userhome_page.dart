@@ -118,9 +118,10 @@ class _UserHomePageState extends State<UserHomePage> {
           children: <Widget>[
             Text('Welcome, $username!', style: TextStyle(fontSize: 24)),
             SizedBox(height: 20),
-            userId != 0
-                ? Text('User ID: $userId', style: TextStyle(fontSize: 18))
-                : CircularProgressIndicator(), // Show loading indicator until userId is initialized
+            if (userId != 0)
+              Text('User ID: $userId', style: TextStyle(fontSize: 18)),
+            if (userId == 0)
+              CircularProgressIndicator(), // Show loading indicator only when userId is 0
           ],
         ),
       ),

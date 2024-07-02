@@ -20,16 +20,12 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
   String? _lokasi;
 
   final List<String> times = [
-    '08:00:00',
     '09:00:00',
     '10:00:00',
     '11:00:00',
     '12:00:00',
     '13:00:00',
     '14:00:00',
-    '15:00:00',
-    '16:00:00',
-    '17:00:00',
   ];
 
   Future<void> _submitPickup() async {
@@ -108,7 +104,8 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
                       _selectedTime = newValue;
                     });
                   },
-                  validator: (value) => value == null ? 'Please select a time' : null,
+                  validator: (value) =>
+                      value == null ? 'Please select a time' : null,
                   items: times.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -138,15 +135,6 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
-                SizedBox(height: 12),
-                TextFormField(
-                  controller: catatanController,
-                  decoration: InputDecoration(
-                    labelText: 'Catatan',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: null,
-                ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitPickup,

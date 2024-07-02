@@ -90,8 +90,7 @@ class _MapPageState extends State<MapPage> {
                 );
                 if (placemarks.isNotEmpty) {
                   Placemark place = placemarks[0];
-                  String fullAddress =
-                      '${place.name}, ${place.street}, ${place.locality}';
+                  String fullAddress = '${place.street}\n${place.locality}';
                   widget.onLocationSelected(fullAddress);
                 } else {
                   widget.onLocationSelected("Alamat tidak Di temukan");

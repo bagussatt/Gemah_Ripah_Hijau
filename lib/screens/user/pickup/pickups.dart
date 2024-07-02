@@ -35,6 +35,18 @@ class _PickupPageState extends State<PickupPage> {
       print('Failed to load pickups.');
     }
   }
+  Future<void> _feetchfeedback() async {
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:3000/pickups/read'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        pickups = List<Map<String, dynamic>>.from(json.decode(response.body));
+      });
+    } else {
+      print('Failed to load pickups.');
+    }
+  }
 
   Future<void> _deletePickup(int id) async {
     final response =

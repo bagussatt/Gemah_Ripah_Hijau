@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/login'),
+      Uri.parse('http://10.0.2.2:3000/users/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'username': _usernameController.text,
@@ -26,7 +26,8 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       final String role = responseBody['role'];
-      final String username = _usernameController.text;  // Ambil username dari controller
+      final String username =
+          _usernameController.text; // Ambil username dari controller
 
       // Pindahkan pengguna ke halaman yang sesuai berdasarkan role
       Future.delayed(Duration(seconds: 1), () {
@@ -39,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => UserHomePage(username: username),  // Pass username ke UserHomePage
+              builder: (context) => UserHomePage(
+                  username: username), // Pass username ke UserHomePage
             ),
           );
         }
