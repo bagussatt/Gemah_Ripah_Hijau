@@ -1,59 +1,49 @@
+// services/read_complaints_service.dart
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:grhijau/models/complaint.dart';
 
-class ComplaintService {
-  static const String baseUrl = 'http://10.0.2.2:3000';
-
-  Future<void> createComplaint(
-      int userId, String complaint, String photoPath) async {
-    var request =
-        http.MultipartRequest('POST', Uri.parse('$baseUrl/complaints'));
-    request.fields['user_id'] = userId.toString();
-    request.fields['complaint'] = complaint;
-    if (photoPath != null) {
-      request.files.add(await http.MultipartFile.fromPath('photo', photoPath));
-    }
-
-    var response = await request.send();
-    if (response.statusCode != 200) {
-      throw Exception('Failed to create complaint');
-    }
-  }
-
-  Future<List<Complaint>> getComplaints() async {
-    final response = await http.get(Uri.parse('$baseUrl/complaints'));
+class ReadComplaintsService {
+  static Future<List<Complaint>> fetchComplaints(int userId) async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/complaints/user/$userId'),
+    );
 
     if (response.statusCode == 200) {
-      List<dynamic> body = json.decode(response.body);
-      return body.map((dynamic item) => Complaint.fromJson(item)).toList();
+      List<dynamic> jsonList = json.decode(response.body);
+      List<Complaint> complaints = jsonList.map((json) => Complaint.fromJson(json)).toList();
+      return complaints;
     } else {
       throw Exception('Failed to load complaints');
     }
   }
-}
 
-class Complaint {
-  final int id;
-  final int userId;
-  final String complaint;
-  final String? photoBase64;
-
-  Complaint({required this.id, required this.userId, required this.complaint, this.photoBase64});
-
-  factory Complaint.fromJson(Map<String, dynamic> json) {
-    return Complaint(
-      id: json['id'],
-      userId: json['user_id'],
-      complaint: json['complaint'],
-      photoBase64: json['photo_url'],
+  static Future<void> deleteComplaint(int id) async {
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:3000/complaints/images/$id'),
     );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete complaint');
+    }
   }
 
-  Image? get photo {
-    if (photoBase64 != null) {
-      return Image.memory(base64Decode(photoBase64!));
+  Future<void> updateComplaint(Map<String, dynamic> complaint, String updatedComplaint, File? imageFile) async {
+    var request = http.MultipartRequest(
+        'PUT',
+        Uri.parse('http://10.0.2.2:3000/complaints/images/${complaint['id']}'));
+    request.fields['complaint'] = updatedComplaint;
+
+    if (imageFile != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('image', imageFile.path));
     }
-    return null;
+
+    var response = await request.send();
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update complaint');
+    }
   }
 }

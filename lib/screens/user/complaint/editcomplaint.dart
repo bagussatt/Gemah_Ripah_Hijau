@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// screens/user/complaint/edit_complaint_page.dart
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:grhijau/controllers/edit_complaint_controller.dart';
 
 class EditComplaintPage extends StatefulWidget {
   final Map<String, dynamic> complaint;
@@ -15,6 +17,7 @@ class EditComplaintPage extends StatefulWidget {
 class _EditComplaintPageState extends State<EditComplaintPage> {
   late TextEditingController _complaintController;
   File? _image;
+  final EditComplaintController _controller = EditComplaintController();
 
   @override
   void initState() {
@@ -33,30 +36,17 @@ class _EditComplaintPageState extends State<EditComplaintPage> {
   }
 
   Future<void> _updateComplaint() async {
-    var request = http.MultipartRequest(
-        'PUT',
-        Uri.parse(
-            'http://10.0.2.2:3000/complaints/images/${widget.complaint['id']}'));
-    request.fields['complaint'] = _complaintController.text;
-
-    if (_image != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('image', _image!.path));
-    }
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
+    try {
+      await _controller.updateComplaint(
+          widget.complaint, _complaintController.text, _image);
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Complaint updated successfully!')));
-
-      // Mengirim kembali hasil true dan nilai keluhan yang diperbarui ke halaman sebelumnya
       Navigator.pop(context, {
         'result': true,
         'complaint': _complaintController.text,
         'photo_url': widget.complaint['photo_url']
       });
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Failed to update complaint.')));
     }

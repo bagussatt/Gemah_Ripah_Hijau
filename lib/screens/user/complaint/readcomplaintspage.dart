@@ -1,8 +1,9 @@
+// screens/user/complaint/read_complaints_page.dart
 import 'package:flutter/material.dart';
-import 'package:grhijau/screens/user/complaint/complaint_detail.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:grhijau/controllers/read_complaints_controller.dart';
+import 'package:grhijau/models/complaint.dart';
+import 'package:grhijau/screens/user/complaint/complaint_detail.dart';
 
 class ReadComplaintsPage extends StatefulWidget {
   final int userId;
@@ -14,37 +15,34 @@ class ReadComplaintsPage extends StatefulWidget {
 }
 
 class _ReadComplaintsPageState extends State<ReadComplaintsPage> {
-  List<Map<String, dynamic>> complaints = [];
+  late ReadComplaintsController _controller;
+  List<Complaint> complaints = [];
 
   @override
   void initState() {
     super.initState();
+    _controller = ReadComplaintsController(userId: widget.userId);
     _fetchComplaints();
   }
 
   Future<void> _fetchComplaints() async {
-    final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/complaints/user/${widget.userId}'));
-
-    if (response.statusCode == 200) {
+    try {
+      final List<Complaint> fetchedComplaints =
+          await _controller.fetchComplaints();
       setState(() {
-        complaints =
-            List<Map<String, dynamic>>.from(json.decode(response.body));
+        complaints = fetchedComplaints;
       });
-    } else {
-      print('Failed to load complaints.');
+    } catch (e) {
+      debugPrint('Gagal mengambil keluhan: $e');
     }
   }
 
   Future<void> _deleteComplaint(int id) async {
-    final response = await http
-        .delete(Uri.parse('http://10.0.2.2:3000/complaints/images/$id'));
-
-    if (response.statusCode == 200) {
-      print('Complaint deleted successfully!');
+    try {
+      await _controller.deleteComplaint(id);
       _fetchComplaints();
-    } else {
-      print('Failed to delete complaint.');
+    } catch (e) {
+      debugPrint('Gagal menghapus keluhan: $e');
     }
   }
 
@@ -53,30 +51,26 @@ class _ReadComplaintsPageState extends State<ReadComplaintsPage> {
     return DateFormat('dd MMMM yyyy, HH:mm').format(dateTime);
   }
 
-  Future<void> _refreshComplaints() async {
-    await _fetchComplaints();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List of Complaints'),
+        title: Text('Daftar Keluhan'),
       ),
       body: RefreshIndicator(
-        onRefresh: _refreshComplaints,
+        onRefresh: _fetchComplaints,
         child: ListView.builder(
           itemCount: complaints.length,
           itemBuilder: (context, index) {
             final complaint = complaints[index];
             return ListTile(
-              leading: Image.network(complaint['photo_url']),
-              title: Text('Complaint ID: ${complaint['id']}'),
+              leading: Image.network(complaint.photoUrl),
+              title: Text('ID Keluhan: ${complaint.id}'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(_formatDateTime(complaint['waktu'])),
-                  Text(complaint['complaint']),
+                  Text(_formatDateTime(complaint.waktu)),
+                  Text(complaint.complaint),
                   Divider(height: 15),
                 ],
               ),
@@ -85,7 +79,7 @@ class _ReadComplaintsPageState extends State<ReadComplaintsPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ComplaintDetailPage(complaint: complaint),
+                        ComplaintDetailPage(complaint: complaint.toJson()),
                   ),
                 );
               },
