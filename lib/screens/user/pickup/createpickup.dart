@@ -46,7 +46,6 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
         'user_id': widget.userId,
         'waktu': dateTime,
         'lokasi': _lokasi,
-        'catatan': catatanController.text,
       }),
     );
 

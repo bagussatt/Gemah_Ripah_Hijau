@@ -1,43 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:grhijau/screens/user/pickup/pickups.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:grhijau/screens/user/complaint/createcomplaintpage.dart';
 import 'package:grhijau/screens/user/complaint/readcomplaintspage.dart';
 import 'package:grhijau/screens/user/login_page.dart';
+import 'package:grhijau/screens/user/pickup/pickups.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class UserHomePage extends StatefulWidget {
-  final String username;
+  final String nama;
 
-  UserHomePage({required this.username});
+  UserHomePage({required this.nama});
 
   @override
   _UserHomePageState createState() => _UserHomePageState();
 }
 
 class _UserHomePageState extends State<UserHomePage> {
-  late String username;
-  late int userId; // Initialize userId
+  String nama = '';
+  String username = '';
+  int userId = 1; 
 
   @override
   void initState() {
     super.initState();
-    username = widget.username;
-    userId = 0; // Initialize userId here
     _fetchUserData();
   }
 
   Future<void> _fetchUserData() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/user/$username'));
+    try {
+      final response =
+          await http.get(Uri.parse('http://10.0.2.2:3000/user/${widget.nama}'));
 
-    if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      setState(() {
-        username = responseBody['username'];
-        userId = responseBody['id']; // Assign userId after fetching user data
-      });
-    } else {
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        setState(() {
+          username = responseBody['username'];
+          userId = responseBody['id'];
+        });
+      } else {
+        throw Exception('Failed to fetch user data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to fetch user data')),
       );
@@ -48,7 +52,7 @@ class _UserHomePageState extends State<UserHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Page'),
+        title: Text('Menu'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -82,7 +86,7 @@ class _UserHomePageState extends State<UserHomePage> {
                   MaterialPageRoute(
                     builder: (context) => ReadComplaintsPage(userId: userId),
                   ),
-                );
+                ); // Menutup drawer setelah navigasi selesai
               },
             ),
             ListTile(
@@ -104,7 +108,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PickupPage(userId: userId),
+                    builder: (context) => PickupPage(userId : userId),
                   ),
                 );
               },
@@ -116,12 +120,9 @@ class _UserHomePageState extends State<UserHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Welcome, $username!', style: TextStyle(fontSize: 24)),
+            Text('Welcome, ${widget.nama}', style: TextStyle(fontSize: 24)),
             SizedBox(height: 20),
-            if (userId != 0)
-              Text('User ID: $userId', style: TextStyle(fontSize: 18)),
-            if (userId == 0)
-              CircularProgressIndicator(), // Show loading indicator only when userId is 0
+            Text('User ID: $userId', style: TextStyle(fontSize: 18)),
           ],
         ),
       ),

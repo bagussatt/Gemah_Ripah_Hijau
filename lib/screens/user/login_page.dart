@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:grhijau/controllers/login_controller.dart';
-import 'package:grhijau/models/user.dart';
-import 'package:grhijau/repositories/UserRepository.dart';
-import 'package:grhijau/screens/admin/adminhome_page.dart';
-import 'package:grhijau/screens/user/userhome_page.dart';
-import 'package:grhijau/sevices/authservice.dart';
+import 'package:grhijau/controllers/login_controller.dart'; // Sesuaikan dengan path yang benar
+import 'package:grhijau/screens/user/userhome_page.dart'; // Sesuaikan dengan path yang benar
+import 'package:grhijau/models/user.dart'; // Sesuaikan dengan path yang benar
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,58 +9,40 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _nama = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final LoginController _loginController = LoginController(
-    userRepository: UserRepository(
-      apiService: ApiService(baseUrl: 'http://10.0.2.2:3000'),
-    ),
-  );
-
-  String _message = '';
-  String _enteredUsername = '';
-  String _enteredPassword = '';
+  final UserController _userController =
+      UserController(); // Sesuaikan dengan controller yang benar
 
   void _login() async {
-    final username = _usernameController.text;
-    final password = _passwordController.text;
+    try {
+      final username = _usernameController.text;
+      final password = _passwordController.text;
 
-    setState(() {
-      _enteredUsername = username;
-      _enteredPassword = password;
-    });
+      if (username.isNotEmpty && password.isNotEmpty) {
+        final User user = await _userController.login(username,
+            password); // Pastikan model User telah diimpor dengan benar
 
-    User? user = await _loginController.login(username, password);
-
-    if (user != null) {
-      setState(() {
-        _message = 'Login berhasil sebagai ${user.username}';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login berhasil sebagai ${user.username}')),
-      );
-
-      // Navigasi berdasarkan peran pengguna
-      if (user.role == 'admin') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AdminHomePage()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
+        if (user.role == 'admin') {
+          // Navigasi ke halaman admin jika diperlukan
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
               builder: (context) => UserHomePage(
-                    username: user.username,
-                  )),
+                  nama: _nama.text), // Mengirim username dan userId
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Username and password are required')),
         );
       }
-    } else {
-      setState(() {
-        _message = 'Login gagal';
-      });
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login gagal')),
+        SnackBar(content: Text('Failed to login: $e')),
       );
     }
   }
@@ -71,31 +50,34 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(
+        title: Text('Login Page'),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(labelText: 'Username'),
             ),
             TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
+              controller: _nama,
+              decoration:
+                  InputDecoration(labelText: 'Konfirmasi Ulang Username'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 12.0),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: _login,
               child: Text('Login'),
             ),
-            SizedBox(height: 20),
-            Text('Username: $_enteredUsername'),
-            Text('Password: $_enteredPassword'),
-            SizedBox(height: 20),
-            Text(_message, style: TextStyle(color: Colors.red)),
           ],
         ),
       ),

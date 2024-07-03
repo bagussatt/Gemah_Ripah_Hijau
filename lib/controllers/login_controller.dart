@@ -1,12 +1,16 @@
 import 'package:grhijau/models/user.dart';
-import 'package:grhijau/repositories/UserRepository.dart';
+import 'package:grhijau/sevices/authservice.dart'; // Pastikan penulisan nama file dan import benar
 
-class LoginController {
-  final UserRepository userRepository;
+class UserController {
+  final AuthService _authService = AuthService();
 
-  LoginController({required this.userRepository});
-
-  Future<User?> login(String username, String password) {
-    return userRepository.login(username, password);
+  Future<User> login(String username, String password) async {
+    try {
+      // Panggil fungsi login dari AuthService
+      User user = await _authService.login(username, password);
+      return user; // Kembalikan objek User jika login berhasil
+    } catch (e) {
+      throw e; // lempar kembali error jika terjadi kesalahan
+    }
   }
 }

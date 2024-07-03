@@ -1,17 +1,16 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:grhijau/models/user.dart';
+import 'package:grhijau/repositories/UserRepository.dart';
 
-class ApiService {
-  final String baseUrl;
+class AuthService {
+  final UserRepository _userRepository = UserRepository();
 
-  ApiService({required this.baseUrl});
-
-  Future<http.Response> post(String endpoint, Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl$endpoint');
-    return await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(data),
-    );
+  Future<User> login(String username, String password) async {
+    try {
+      // Panggil fungsi login dari UserRepository
+      User user = await _userRepository.login(username, password);
+      return user; // Kembalikan objek User jika login berhasil
+    } catch (e) {
+      throw e; // Lemparkan kembali error jika terjadi kesalahan
+    }
   }
 }
