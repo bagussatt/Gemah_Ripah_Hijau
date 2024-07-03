@@ -18,7 +18,7 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   String nama = '';
   String username = '';
-  int userId = 1; 
+  int userId = 1;
 
   @override
   void initState() {
@@ -108,7 +108,9 @@ class _UserHomePageState extends State<UserHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PickupPage(userId : userId),
+                    builder: (context) => PickupPage(
+                      userId: userId,
+                    ),
                   ),
                 );
               },
