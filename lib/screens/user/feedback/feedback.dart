@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:grhijau/controllers/feedback_controller.dart';
 
 class FeedbackPage extends StatefulWidget {
   final int userId;
@@ -14,32 +13,9 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
+  final FeedbackController _controller = FeedbackController();
   TextEditingController feedbackController = TextEditingController();
   double rating = 1.0;
-
-  Future<void> _submitFeedback() async {
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/feedback/create'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'user_id': widget.userId,
-        'pickup_id': widget.pickupId,
-        'feedback': feedbackController.text,
-        'rating': rating.toInt(),
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Feedback submitted successfully')),
-      );
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to submit feedback')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +53,15 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _submitFeedback,
+              onPressed: () {
+                _controller.submitFeedback(
+                  userId: widget.userId,
+                  pickupId: widget.pickupId,
+                  feedback: feedbackController.text,
+                  rating: rating.toInt(),
+                  context: context,
+                );
+              },
               child: Text('Submit'),
             ),
           ],

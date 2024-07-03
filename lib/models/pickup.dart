@@ -18,6 +18,6 @@ class Pickup {
         status: json['status'],
         waktu: json['waktu'],
         lokasi: json['lokasi'],
-        catatan: json['catatan'],
+        catatan: json['catatan'] ?? "Belum Ada Catatan",
       );
 }

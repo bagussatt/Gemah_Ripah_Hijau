@@ -43,18 +43,24 @@ class DetailPickupsPage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  'Catatan: ${pickup['catatan']}',
+                  'Catatan: ${pickup['catatan'] ?? 'Tidak ada catatan'}',
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () => controller.deletePickup(pickup['id']),
-                  child: Text('Batalkan Penjemput'),
-                ),
-                SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () => controller.navigateToFeedbackPage(),
-                  child: Text('Submit Feedback'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: () => controller.deletePickup(pickup['id']),
+                      child: Text('Batalkan Penjemput'),
+                    ),
+                    ElevatedButton(
+                      onPressed: pickup['status'] == 'Collected'
+                          ? () => controller.navigateToFeedbackPage()
+                          : null,
+                      child: Text('Submit Feedback'),
+                    ),
+                  ],
                 ),
               ],
             ),

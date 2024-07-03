@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:grhijau/repositories/createpickuprepository.dart';
 import 'package:grhijau/screens/user/pickup/lokasi.dart';
-import 'package:http/http.dart' as http;
+import 'package:grhijau/sevices/create_pickups_service.dart';
 
 class CreatePickupPage extends StatefulWidget {
   final int userId;
@@ -18,6 +18,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
 
   String? _selectedTime;
   String? _lokasi;
+  String? _catatan;
 
   final List<String> times = [
     '09:00:00',
@@ -28,8 +29,13 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
     '14:00:00',
   ];
 
+  final CreatePickupService pickupService =
+      CreatePickupService(pickupRepository: CreatePickupRepository());
+
   Future<void> _submitPickup() async {
-    if (!_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate() ||
+        _selectedTime == null ||
+        _lokasi == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),
       );
@@ -39,23 +45,8 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
     String currentDate = DateTime.now().toString().split(' ')[0];
     String dateTime = '$currentDate $_selectedTime';
 
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/pickups/create'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'user_id': widget.userId,
-        'waktu': dateTime,
-        'lokasi': _lokasi,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to create pickup.')),
-      );
-    }
+    await pickupService.submitPickup(
+        context, widget.userId, dateTime, _lokasi!);
   }
 
   void _selectLocation() async {

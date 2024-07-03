@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grhijau/controllers/login_controller.dart'; // Sesuaikan dengan path yang benar
 import 'package:grhijau/screens/user/userhome_page.dart'; // Sesuaikan dengan path yang benar
+import 'package:grhijau/screens/admin/adminhome_page.dart'; // Sesuaikan dengan path yang benar
 import 'package:grhijau/models/user.dart'; // Sesuaikan dengan path yang benar
 
 class LoginPage extends StatefulWidget {
@@ -24,8 +25,14 @@ class _LoginPageState extends State<LoginPage> {
         final User user = await _userController.login(username,
             password); // Pastikan model User telah diimpor dengan benar
 
-        if (user.role == 'admin') {
-          // Navigasi ke halaman admin jika diperlukan
+        if (user.username == 'admin') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  AdminHomePage(), // Navigasi ke AdminHomePage
+            ),
+          );
         } else {
           Navigator.pushReplacement(
             context,

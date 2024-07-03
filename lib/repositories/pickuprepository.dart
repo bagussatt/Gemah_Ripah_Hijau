@@ -31,4 +31,5 @@ class PickupRepository {
       throw Exception('Failed to delete pickup: $e');
     }
   }
+  
 }
