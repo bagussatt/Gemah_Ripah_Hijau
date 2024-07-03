@@ -1,9 +1,9 @@
 class Pickup {
-  final int id;
-  final String status;
-  final String waktu;
-  final String lokasi;
-  final String catatan;
+  int id;
+  String status;
+  String waktu;
+  String lokasi;
+  String catatan;
 
   Pickup({
     required this.id,
@@ -13,13 +13,11 @@ class Pickup {
     required this.catatan,
   });
 
-  factory Pickup.fromJson(Map<String, dynamic> json) {
-    return Pickup(
-      id: json['id'],
-      status: json['status'],
-      waktu: json['waktu'],
-      lokasi: json['lokasi'],
-      catatan: json['catatan'],
-    );
-  }
+  factory Pickup.fromJson(Map<String, dynamic> json) => Pickup(
+        id: json['id'],
+        status: json['status'],
+        waktu: json['waktu'],
+        lokasi: json['lokasi'],
+        catatan: json['catatan'],
+      );
 }
