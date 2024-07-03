@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grhijau/controllers/complaint_detail_controller.dart';
 import 'package:grhijau/screens/user/complaint/editcomplaint.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ComplaintDetailPage extends StatefulWidget {
@@ -13,27 +13,13 @@ class ComplaintDetailPage extends StatefulWidget {
 }
 
 class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
-  bool _isComplaintUpdated = false;
+  late bool _isComplaintUpdated;
+  final ComplaintDetailController _controller = ComplaintDetailController();
 
-  Future<void> _deleteComplaint(BuildContext context, int id) async {
-    final response = await http
-        .delete(Uri.parse('http://10.0.2.2:3000/complaints/images/$id'));
-
-    if (response.statusCode == 200) {
-      print('Complaint deleted successfully!');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Complaint deleted successfully')),
-      );
-      Navigator.pop(
-          context, true); // Kembali ke halaman sebelumnya setelah penghapusan
-    } else {
-      print('Failed to delete complaint.');
-    }
-  }
-
-  String _formatDateTime(String dateTimeString) {
-    DateTime dateTime = DateTime.parse(dateTimeString);
-    return DateFormat('dd MMMM yyyy, HH:mm').format(dateTime);
+  @override
+  void initState() {
+    super.initState();
+    _isComplaintUpdated = false;
   }
 
   void _updateComplaintDetail(
@@ -73,7 +59,10 @@ class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () => _deleteComplaint(context, widget.complaint['id']),
+            onPressed: () async {
+              await _controller.deleteComplaint(widget.complaint['id']);
+              Navigator.pop(context, true);
+            },
           ),
         ],
       ),
@@ -98,7 +87,7 @@ class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
             ),
             SizedBox(height: 16.0),
             Image.network(widget.complaint['photo_url']),
-            if (_isComplaintUpdated) // Tampilkan pesan setelah berhasil update
+            if (_isComplaintUpdated)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Text(
@@ -109,6 +98,12 @@ class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
           ],
         ),
       ),
+      backgroundColor: Colors.lightGreen,
     );
+  }
+
+  String _formatDateTime(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return DateFormat('dd MMMM yyyy, HH:mm').format(dateTime);
   }
 }

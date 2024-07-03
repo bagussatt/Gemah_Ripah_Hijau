@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+import 'package:grhijau/controllers/create_complaint_controller.dart';
 
 class CreateComplaintPage extends StatefulWidget {
   final int userId;
@@ -18,6 +18,7 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
   final picker = ImagePicker();
   TextEditingController _complaintController = TextEditingController();
   bool _isUploading = false;
+  final CreateComplaintController _controller = CreateComplaintController();
 
   Future<void> _takePicture() async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -35,7 +36,8 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
     if (_image == null || _complaintController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Please select an image and enter your complaint')),
+          content: Text('Please select an image and enter your complaint'),
+        ),
       );
       return;
     }
@@ -44,33 +46,25 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
       _isUploading = true;
     });
 
-    final uri = Uri.parse('http://10.0.2.2:3000/complaints/upload');
-    var request = http.MultipartRequest('POST', uri)
-      ..files.add(await http.MultipartFile.fromPath('image', _image!.path))
-      ..fields['user_id'] = widget.userId.toString()
-      ..fields['complaint'] = _complaintController.text;
-
     try {
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        print('Complaint uploaded successfully!');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Complaint uploaded successfully!')),
-        );
-        Navigator.pop(
-            context); // Kembali ke halaman sebelumnya setelah upload berhasil
-      } else {
-        print('Complaint upload failed.');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Complaint upload failed.')),
-        );
-      }
+      await _controller.uploadComplaint(
+        widget.userId,
+        _complaintController.text,
+        _image!,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Complaint uploaded successfully!')),
+      );
+
+      Navigator.pop(
+          context); // Kembali ke halaman sebelumnya setelah upload berhasil
     } catch (e) {
       print('Error uploading complaint: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content:
-                Text('Error uploading complaint. Please try again later.')),
+          content: Text('Error uploading complaint. Please try again later.'),
+        ),
       );
     } finally {
       setState(() {
@@ -121,6 +115,8 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
           ],
         ),
       ),
+       backgroundColor:
+          Colors.lightGreen,
     );
   }
 }

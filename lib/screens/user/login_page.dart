@@ -16,6 +16,15 @@ class _LoginPageState extends State<LoginPage> {
   final UserController _userController =
       UserController(); // Sesuaikan dengan controller yang benar
 
+  bool _isObscured =
+      true; // Untuk mengatur apakah password dienkripsi atau tidak
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
+  }
+
   void _login() async {
     try {
       final username = _usernameController.text;
@@ -25,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
         final User user = await _userController.login(username,
             password); // Pastikan model User telah diimpor dengan benar
 
-        if (user.username == 'admin') {
+        if (user.role == 'admin') {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -57,28 +66,71 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:
+          false, // Menghilangkan margin bawah saat keyboard muncul
       appBar: AppBar(
         title: Text('Login Page'),
+        backgroundColor: Colors.lightGreenAccent,
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.lightGreen, // Warna latar belakang hijau muda
         padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+            ClipOval(
+              child: Image(
+                image: NetworkImage(
+                    'https://kkprirsmdjamil.com/wp-content/uploads/2022/08/koperasi-flag-web-1024x614.webp'),
+                height: 200, // Ukuran gambar yang melingkar
+                fit: BoxFit.cover,
+              ),
             ),
-            TextField(
-              controller: _nama,
-              decoration:
-                  InputDecoration(labelText: 'Konfirmasi Ulang Username'),
+            SizedBox(height: 26.0),
+            TextFormField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
             ),
             SizedBox(height: 12.0),
-            TextField(
+            TextFormField(
+              controller: _nama,
+              decoration: InputDecoration(
+                labelText: 'Konfirmasi Ulang Username',
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            SizedBox(height: 12.0),
+            TextFormField(
               controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: _isObscured,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isObscured ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(

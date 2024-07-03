@@ -16,7 +16,6 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
-  String nama = '';
   String username = '';
   int userId = 1;
 
@@ -65,9 +64,8 @@ class _UserHomePageState extends State<UserHomePage> {
             TextButton(
               child: Text('Keluar'),
               onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
+                // Lakukan logout
+                _logout();
               },
             ),
           ],
@@ -76,11 +74,23 @@ class _UserHomePageState extends State<UserHomePage> {
     );
   }
 
+  // Fungsi logout
+  void _logout() {
+    // Hapus semua halaman dari tumpukan navigasi dan arahkan ke halaman login
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (Route<dynamic> route) =>
+          false, // Hapus semua halaman dari tumpukan navigasi
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Menu'),
+        backgroundColor:
+            Colors.lightGreen, // Ubah warna AppBar menjadi hijau muda
       ),
       drawer: Drawer(
         child: ListView(
@@ -88,7 +98,8 @@ class _UserHomePageState extends State<UserHomePage> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors
+                    .lightGreen, // Ubah warna Drawer Header menjadi hijau muda
               ),
               child: Text(
                 'Welcome, $username!',
@@ -133,9 +144,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PickupPage(
-                      userId: userId,
-                    ),
+                    builder: (context) => PickupPage(userId: userId),
                   ),
                 );
               },
@@ -153,6 +162,7 @@ class _UserHomePageState extends State<UserHomePage> {
           ],
         ),
       ),
+      backgroundColor: Colors.lightGreen,
     );
   }
 }

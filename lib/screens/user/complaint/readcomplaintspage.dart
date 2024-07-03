@@ -87,6 +87,8 @@ class _ReadComplaintsPageState extends State<ReadComplaintsPage> {
           },
         ),
       ),
+       backgroundColor:
+          Colors.lightGreen,
     );
   }
 }

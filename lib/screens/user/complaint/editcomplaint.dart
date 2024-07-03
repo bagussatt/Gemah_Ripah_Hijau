@@ -83,6 +83,8 @@ class _EditComplaintPageState extends State<EditComplaintPage> {
           ),
         ),
       ),
+       backgroundColor:
+          Colors.lightGreen,
     );
   }
 }

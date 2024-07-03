@@ -13,6 +13,7 @@ class DetailPickupsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pickup Detail'),
+        backgroundColor: Color.fromARGB(255, 29, 154, 77),
       ),
       body: Builder(
         builder: (BuildContext context) {
@@ -51,7 +52,7 @@ class DetailPickupsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: () => controller.deletePickup(pickup['id']),
+                      onPressed: () => _confirmCancelPickup(context),
                       child: Text('Batalkan Penjemput'),
                     ),
                     ElevatedButton(
@@ -67,6 +68,39 @@ class DetailPickupsPage extends StatelessWidget {
           );
         },
       ),
+      backgroundColor: Colors.lightGreen,
+    );
+  }
+
+  void _confirmCancelPickup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Batalkan Penjemputan'),
+          content: Text('Apakah Anda yakin ingin membatalkan penjemputan ini?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Batal'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Ya'),
+              onPressed: () {
+                final controller = DetailPickupsController(
+                  context: context,
+                  pickup: Pickup.fromJson(pickup),
+                  userId: userId,
+                );
+                controller.deletePickup(pickup['id']);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

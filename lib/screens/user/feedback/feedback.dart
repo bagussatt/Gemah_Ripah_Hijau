@@ -67,6 +67,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ],
         ),
       ),
+       backgroundColor:
+          Colors.lightGreen,
     );
   }
 }

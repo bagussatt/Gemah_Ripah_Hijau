@@ -135,6 +135,8 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
           ),
         ),
       ),
+       backgroundColor:
+          Colors.lightGreen,
     );
   }
 }
