@@ -54,20 +54,25 @@ class _ReadPickupsAdminState extends State<ReadPickupsAdmin> {
           : ListView.builder(
               itemCount: pickups.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Penjemputan ID: ${pickups[index]['id']}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Status: ${pickups[index]['status']}'),
-                      Text('Catatan: ${pickups[index]['catatan']}'),
-                      Text('Waktu: ${pickups[index]['waktu']}'),
-                      Text('Lokasi: ${pickups[index]['lokasi']}'),
-                    ],
+                return Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  child: ListTile(
+                    title: Text('Penjemputan ID: ${pickups[index]['id']}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Status: ${pickups[index]['status']}'),
+                        Text('Catatan: ${pickups[index]['catatan']}'),
+                        Text('Waktu: ${pickups[index]['waktu']}'),
+                        Text('Lokasi: ${pickups[index]['lokasi']}'),
+                        Divider(height: 15),
+                      ],
+                    ),
+                    onTap: () {
+                      _navigateToPickupDetail(pickups[index]['id']);
+                    },
                   ),
-                  onTap: () {
-                    _navigateToPickupDetail(pickups[index]['id']);
-                  },
                 );
               },
             ),

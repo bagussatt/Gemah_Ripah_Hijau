@@ -63,32 +63,35 @@ class _ReadComplaintsPageState extends State<ReadComplaintsPage> {
           itemCount: complaints.length,
           itemBuilder: (context, index) {
             final complaint = complaints[index];
-            return ListTile(
-              leading: Image.network(complaint.photoUrl),
-              title: Text('ID Keluhan: ${complaint.id}'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(_formatDateTime(complaint.waktu)),
-                  Text(complaint.complaint),
-                  Divider(height: 15),
-                ],
+            return Card(
+              elevation: 3,
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: ListTile(
+                leading: Image.network(complaint.photoUrl),
+                title: Text('ID Keluhan: ${complaint.id}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(_formatDateTime(complaint.waktu)),
+                    Text(complaint.complaint),
+                    Divider(height: 15),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ComplaintDetailPage(complaint: complaint.toJson()),
+                    ),
+                  );
+                },
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ComplaintDetailPage(complaint: complaint.toJson()),
-                  ),
-                );
-              },
             );
           },
         ),
       ),
-       backgroundColor:
-          Colors.lightGreen,
+      backgroundColor: Colors.lightGreen,
     );
   }
 }

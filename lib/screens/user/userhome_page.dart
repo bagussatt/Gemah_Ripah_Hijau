@@ -87,7 +87,7 @@ class _UserHomePageState extends State<UserHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Menu'),
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Color.fromARGB(255, 64, 107, 15),
       ),
       drawer: Drawer(
         child: ListView(
@@ -153,6 +153,11 @@ class _UserHomePageState extends State<UserHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(height: 20),
+            Text('Selamat Datang, ${widget.nama}',
+                style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20),
+            Text('User ID: $userId', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
             CarouselSlider(
               options: CarouselOptions(
                 height: 200.0,
@@ -175,11 +180,82 @@ class _UserHomePageState extends State<UserHomePage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20),
-            Text('Selamat Datang, ${widget.nama}',
-                style: TextStyle(fontSize: 24)),
-            SizedBox(height: 20),
-            Text('User ID: $userId', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 40),
+            Container(
+              padding: EdgeInsets.all(16.0),
+              margin: EdgeInsets.symmetric(horizontal: 20.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 6, 69, 29).withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Text(
+                'Hari ini Tim Pengangkut Sampah beroperasi dari jam 9 sampai jam 14.',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 2),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.report_problem, size: 50),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateComplaintPage(userId: userId),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Text('Ajukan Keluhan'),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 2),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.local_shipping, size: 50),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PickupPage(userId: userId),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Text('Penjemputan'),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -78,13 +78,24 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
                 final feedback = getFilteredFeedbacks()[index];
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 16,
+                    ),
                     title: Text('Feedback ID: ${feedback['id']}'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        SizedBox(height: 5),
                         Text('Feedback: ${feedback['feedback']}'),
+                        SizedBox(height: 5),
                         Text('Rating: ${feedback['rating']}'),
+                        SizedBox(height: 5),
                         Text(
                             'Submitted At: ${_formatDateTime(feedback['created_at'])}'),
                       ],

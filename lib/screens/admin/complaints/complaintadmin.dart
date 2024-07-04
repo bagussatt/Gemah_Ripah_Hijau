@@ -59,27 +59,34 @@ class _ReadComplaintsAdminState extends State<ReadComplaintsAdmin> {
         itemCount: complaints.length,
         itemBuilder: (context, index) {
           final complaint = complaints[index];
-          return ListTile(
-            leading: Image.network(complaint['photo_url']),
-            title: Text('Complaint ID: ${complaint['id']}'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(_formatDateTime(complaint['waktu'])),
-                Text(complaint['complaint']),
-                Divider(height: 15),
-              ],
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ComplaintDetailPage(
-                    complaint: complaint,
+            child: ListTile(
+              leading: Image.network(complaint['photo_url']),
+              title: Text('Complaint ID: ${complaint['id']}'),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(_formatDateTime(complaint['waktu'])),
+                  Text(complaint['complaint']),
+                  Divider(height: 15),
+                ],
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ComplaintDetailPage(
+                      complaint: complaint,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),

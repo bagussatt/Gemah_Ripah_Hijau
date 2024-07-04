@@ -21,12 +21,10 @@ class _PickupPageState extends State<PickupPage> {
   }
 
   void navigateToCreatePickupPage() {
-    // Perubahan nama fungsi
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CreatePickupPage(
-            userId: widget.userId), // Navigasi ke CreatePickupPage
+        builder: (context) => CreatePickupPage(userId: widget.userId),
       ),
     );
   }
@@ -36,12 +34,11 @@ class _PickupPageState extends State<PickupPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Read Pickups'),
-        backgroundColor: Color.fromARGB(
-            255, 29, 154, 77), // Ubah warna AppBar menjadi hijau muda
+        backgroundColor: Color.fromARGB(255, 29, 154, 77),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: navigateToCreatePickupPage, // Perubahan onPressed
+            onPressed: navigateToCreatePickupPage,
           ),
         ],
       ),
@@ -63,48 +60,53 @@ class _PickupPageState extends State<PickupPage> {
                 itemCount: pickups.length,
                 itemBuilder: (context, index) {
                   final pickup = pickups[index];
-                  return ListTile(
-                    title: Text('Pickup ID: ${pickup.id}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Waktu: ${pickup.formattedDateTime()}'),
-                        Text('Lokasi: ${pickup.lokasi}'),
-                        Text(
-                            'Catatan: ${pickup.catatan ?? 'Tidak ada catatan'}'),
-                        Divider(height: 15),
-                      ],
-                    ),
-                    trailing: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: _getStatusColor(pickup.status).withOpacity(0.1),
-                        border: Border.all(
-                          color: _getStatusColor(pickup.status),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(5),
+                  return Card(
+                    elevation: 3,
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    child: ListTile(
+                      title: Text('Pickup ID: ${pickup.id}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Waktu: ${pickup.formattedDateTime()}'),
+                          Text('Lokasi: ${pickup.lokasi}'),
+                          Text(
+                              'Catatan: ${pickup.catatan ?? 'Tidak ada catatan'}'),
+                          Divider(height: 15),
+                        ],
                       ),
-                      child: Text(
-                        pickup.status,
-                        style: TextStyle(
-                          color: _getStatusColor(pickup.status),
-                          fontWeight: FontWeight.bold,
+                      trailing: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color:
+                              _getStatusColor(pickup.status).withOpacity(0.1),
+                          border: Border.all(
+                            color: _getStatusColor(pickup.status),
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailPickupsPage(
-                            userId: widget.userId,
-                            pickup: pickup.toJson(),
+                        child: Text(
+                          pickup.status,
+                          style: TextStyle(
+                            color: _getStatusColor(pickup.status),
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      );
-                    },
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailPickupsPage(
+                              userId: widget.userId,
+                              pickup: pickup.toJson(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               );
@@ -112,8 +114,7 @@ class _PickupPageState extends State<PickupPage> {
           },
         ),
       ),
-      backgroundColor:
-          Colors.lightGreen, // Ubah warna latar belakang menjadi hijau muda
+      backgroundColor: Colors.lightGreen,
     );
   }
 
