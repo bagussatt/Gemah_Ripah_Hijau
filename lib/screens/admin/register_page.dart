@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grhijau/models/user.dart';
-import 'package:grhijau/screens/user/userhome_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -29,7 +27,6 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       if (response.statusCode == 200) {
-        final responseBody = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Pendaftaran berhasil!')),
         );
