@@ -1,4 +1,3 @@
-// screens/user/complaint/edit_complaint_page.dart
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,6 +35,36 @@ class _EditComplaintPageState extends State<EditComplaintPage> {
   }
 
   Future<void> _updateComplaint() async {
+    if (_image == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Gambar tidak boleh kosong.')));
+      return;
+    }
+
+    bool shouldUpdate = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Edit'),
+          content: Text('Apakah Anda yakin ingin mengedit aduan ini?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Tidak'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Ya'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!shouldUpdate) {
+      return;
+    }
+
     try {
       await _controller.updateComplaint(
           widget.complaint, _complaintController.text, _image);
@@ -83,8 +112,7 @@ class _EditComplaintPageState extends State<EditComplaintPage> {
           ),
         ),
       ),
-       backgroundColor:
-          Colors.lightGreen,
+      backgroundColor: Colors.lightGreen,
     );
   }
 }

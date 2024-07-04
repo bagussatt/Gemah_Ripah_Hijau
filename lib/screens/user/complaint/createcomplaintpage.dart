@@ -27,7 +27,7 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image taken.');
+        print('tidak ada gambar.');
       }
     });
   }
@@ -36,7 +36,7 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
     if (_image == null || _complaintController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please select an image and enter your complaint'),
+          content: Text('Mohon Memasukan gambar dan keluhan'),
         ),
       );
       return;
@@ -63,7 +63,7 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
       print('Error uploading complaint: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error uploading complaint. Please try again later.'),
+          content: Text('Error upload. Mohon COba Lagi.'),
         ),
       );
     } finally {
@@ -77,7 +77,7 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Complaint'),
+        title: Text('Buat Keluhan'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -85,7 +85,7 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             _image == null
-                ? Text('No image selected.')
+                ? Text('Belum Memilih Gambar.')
                 : Image.file(
                     _image!,
                     height: 200,
@@ -94,14 +94,14 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _takePicture,
-              child: Text('Take Picture'),
+              child: Text('Ambil Gambar'),
             ),
             SizedBox(height: 16.0),
             TextField(
               controller: _complaintController,
               decoration: InputDecoration(
-                hintText: 'Enter your complaint',
-                labelText: 'Complaint',
+                hintText: 'Masukan Keluhan Anda',
+                labelText: 'Keluhan',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -110,13 +110,12 @@ class _CreateComplaintPageState extends State<CreateComplaintPage> {
               onPressed: _isUploading ? null : _uploadComplaint,
               child: _isUploading
                   ? CircularProgressIndicator()
-                  : Text('Upload Complaint'),
+                  : Text('Upload Keluhan'),
             ),
           ],
         ),
       ),
-       backgroundColor:
-          Colors.lightGreen,
+      backgroundColor: Colors.lightGreen,
     );
   }
 }

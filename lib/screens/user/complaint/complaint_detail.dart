@@ -33,11 +33,38 @@ class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
     }
   }
 
+  Future<void> _confirmDeleteComplaint() async {
+    bool shouldDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Hapus'),
+          content: Text('Apakah Anda yakin ingin menghapus aduan ini?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Tidak'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Ya'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete) {
+      await _controller.deleteComplaint(widget.complaint['id']);
+      Navigator.pop(context, true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Complaint Detail'),
+        title: Text('Detail Keluhan'),
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
@@ -59,10 +86,7 @@ class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () async {
-              await _controller.deleteComplaint(widget.complaint['id']);
-              Navigator.pop(context, true);
-            },
+            onPressed: _confirmDeleteComplaint,
           ),
         ],
       ),
@@ -72,13 +96,8 @@ class _ComplaintDetailPageState extends State<ComplaintDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Complaint ID: ${widget.complaint['id']}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(
               _formatDateTime(widget.complaint['waktu']),
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16.0),
             Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:grhijau/screens/user/complaint/createcomplaintpage.dart';
 import 'package:grhijau/screens/user/complaint/readcomplaintspage.dart';
 import 'package:grhijau/screens/user/login_page.dart';
@@ -37,12 +38,13 @@ class _UserHomePageState extends State<UserHomePage> {
           userId = responseBody['id'];
         });
       } else {
-        throw Exception('Failed to fetch user data: ${response.statusCode}');
+        throw Exception(
+            'Gagal mengambil data pengguna: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+      print('Gagal mengambil data pengguna: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch user data')),
+        SnackBar(content: Text('Gagal mengambil data pengguna')),
       );
     }
   }
@@ -64,7 +66,6 @@ class _UserHomePageState extends State<UserHomePage> {
             TextButton(
               child: Text('Keluar'),
               onPressed: () {
-                // Lakukan logout
                 _logout();
               },
             ),
@@ -74,13 +75,10 @@ class _UserHomePageState extends State<UserHomePage> {
     );
   }
 
-  // Fungsi logout
   void _logout() {
-    // Hapus semua halaman dari tumpukan navigasi dan arahkan ke halaman login
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => LoginPage()),
-      (Route<dynamic> route) =>
-          false, // Hapus semua halaman dari tumpukan navigasi
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -89,8 +87,7 @@ class _UserHomePageState extends State<UserHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Menu'),
-        backgroundColor:
-            Colors.lightGreen, // Ubah warna AppBar menjadi hijau muda
+        backgroundColor: Colors.lightGreen,
       ),
       drawer: Drawer(
         child: ListView(
@@ -98,11 +95,10 @@ class _UserHomePageState extends State<UserHomePage> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors
-                    .lightGreen, // Ubah warna Drawer Header menjadi hijau muda
+                color: Colors.lightGreen,
               ),
               child: Text(
-                'Welcome, $username!',
+                'Selamat Datang, $username!',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
@@ -122,7 +118,7 @@ class _UserHomePageState extends State<UserHomePage> {
                   MaterialPageRoute(
                     builder: (context) => ReadComplaintsPage(userId: userId),
                   ),
-                ); // Menutup drawer setelah navigasi selesai
+                );
               },
             ),
             ListTile(
@@ -152,11 +148,36 @@ class _UserHomePageState extends State<UserHomePage> {
           ],
         ),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Welcome, ${widget.nama}', style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200.0,
+                autoPlay: true,
+                enlargeCenterPage: true,
+              ),
+              items: [
+                'https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1640003094/ckemgunl9n6lvzlkbrnz.jpg',
+                'https://sgp1.digitaloceanspaces.com/p.storage/wp-content/uploads/2023/02/20225425/Ari-dan-Samijan-dua-dari-sepuluh-tenaga-kebersihan-pasar-berkeliling-dari-kios-ke-kios2.jpg',
+                'https://d1yc6vwxvprgjf.cloudfront.net/id/gallery_images/x_medium/1434489083/530578?1434489083'
+              ].map((imageUrl) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.width,
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 20),
+            Text('Selamat Datang, ${widget.nama}',
+                style: TextStyle(fontSize: 24)),
             SizedBox(height: 20),
             Text('User ID: $userId', style: TextStyle(fontSize: 18)),
           ],

@@ -37,7 +37,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
         _selectedTime == null ||
         _lokasi == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields')),
+        SnackBar(content: Text('Mohon Mengisi Waktu dan Lokasi')),
       );
       return;
     }
@@ -73,7 +73,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Pickup'),
+        title: Text('Panggil Penjemputan'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -85,7 +85,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
               children: <Widget>[
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(
-                    labelText: 'Select Time',
+                    labelText: 'Pilih Waktu',
                     border: OutlineInputBorder(),
                   ),
                   value: _selectedTime,
@@ -95,7 +95,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
                     });
                   },
                   validator: (value) =>
-                      value == null ? 'Please select a time' : null,
+                      value == null ? 'Mohon Memilih Waktu' : null,
                   items: times.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -121,7 +121,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      'Please select a location',
+                      'Mohon Mengisi Lokasi',
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
@@ -135,8 +135,7 @@ class _CreatePickupPageState extends State<CreatePickupPage> {
           ),
         ),
       ),
-       backgroundColor:
-          Colors.lightGreen,
+      backgroundColor: Colors.lightGreen,
     );
   }
 }
